@@ -31,6 +31,7 @@ include:
   - ca-trust.yaml
 
 packages:
+  - python3
   # this is implied by dependencies but let's make it explicit
   - coreutils
   # We need dnf for building derived container images. In Fedora, this pulls
