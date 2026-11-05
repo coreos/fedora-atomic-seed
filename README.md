@@ -9,11 +9,32 @@ to easily create many different Operating system variants.
 To build locally simply run:
 
 ```
-podman build --security-opt=label=disable --cap-add=all --device /dev/fuse -t localhost/fedora-atomic-seed:latest .
+sudo podman build --security-opt=label=disable --cap-add=all --device /dev/fuse -t localhost/fedora-atomic-seed:latest .
 ```
 
-To run in a test VM use `bcvk`:
+To build a disk image using `image-builder` CLI:
 
 ```
-bcvk libvirt run --name fedora-atomic-seed-vm localhost/fedora-atomic-seed:latest
+sudo dnf install -y image-builder
+sudo image-builder build                            \
+    --output-dir ./output --output-name disk        \
+    --bootc-ref localhost/fedora-atomic-seed:latest \
+    --bootc-default-fs xfs qcow2
 ```
+
+This will output something like:
+
+```
+Image build successful: output/disk.qcow2
+```
+
+## Testing
+
+To launch with libvirt:
+
+```
+virt-install --import --name seed --ram=1024          \
+    --osinfo detect=on,require=off --autoconsole=text \
+    --disk=size=20,backing_store="${PWD}/output/disk.qcow2"
+```
+
