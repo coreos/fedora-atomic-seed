@@ -12,7 +12,9 @@ import sys
 import tempfile
 
 ARCH = os.uname().machine
-MANIFESTDIR = 'usr/share/doc/bootc-base-imagectl/manifests'
+
+# For now just find manifests from the current working directory.
+MANIFESTDIR = os.getcwd()
 
 def run_build_rootfs(args):
     """
