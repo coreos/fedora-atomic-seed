@@ -24,7 +24,7 @@ FROM $REPOS_IMAGE as repos
 #                and python3 (for bootc-base-imagectl).
 FROM $BUILDER_IMAGE as builder
 RUN dnf -y install rpm-ostree selinux-policy-targeted python3
-ARG MANIFEST=fedora-standard
+ARG MANIFEST=fedora-atomic-seed-default
 # The input git repository has .repo files committed to git rpm-ostree has historically
 # emphasized that.  But here, we are fetching the repos from the container base image.
 # So copy the source, and delete the hardcoded ones in git, and use the container base
