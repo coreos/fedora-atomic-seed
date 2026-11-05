@@ -1,0 +1,12 @@
+variables:
+  distro: "fedora"
+
+# Fedora-specific packages here
+packages:
+  # https://gitlab.com/fedora/bootc/base-images/-/issues/12
+  - fedora-repos-archive
+  # Not in RHEL10
+  - systemd-resolved
+  # Enhanced VT console, not in RHEL9 or RHEL10
+  # https://fedoraproject.org/wiki/Changes/UseKmsconVTConsole
+  - kmscon

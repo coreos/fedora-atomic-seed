@@ -1,0 +1,21 @@
+# Regenerate the host CA trust store on first boot and after updates.
+#
+# On bootc/ostree systems, generated config files in /etc may become
+# stale after an image upgrade due to the 3-way merge preserving
+# locally modified files. Refresh the bundles from the current image's
+# trust sources and the machine's local trust and distrust configuration.
+# Early consumers and initramfs copies require separate handling.
+#
+# See: https://forge.fedoraproject.org/atomic/tracker/issues/145
+# CoreOS ref: https://github.com/coreos/fedora-coreos-config/blob/8ab99b12/overlay.d/05core/usr/lib/systemd/system/coreos-update-ca-trust.service
+add-files:
+  - - atomic-update-ca-trust.service
+    - /usr/lib/systemd/system/atomic-update-ca-trust.service
+
+postprocess:
+  - |
+    #!/bin/bash
+    set -xeuo pipefail
+    chmod 0644 /usr/lib/systemd/system/atomic-update-ca-trust.service
+    mkdir -p /usr/lib/systemd/system/sysinit.target.wants
+    ln -s ../atomic-update-ca-trust.service /usr/lib/systemd/system/sysinit.target.wants/atomic-update-ca-trust.service
