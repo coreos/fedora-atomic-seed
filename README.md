@@ -12,8 +12,19 @@ To build locally simply run:
 podman build --security-opt=label=disable --cap-add=all --device /dev/fuse -t localhost/fedora-atomic-seed:latest .
 ```
 
-To run in a test VM use `bcvk`:
+To build a disk image using `image-builder` CLI:
 
 ```
-bcvk libvirt run --name fedora-atomic-seed-vm localhost/fedora-atomic-seed:latest
+sudo image-builder build                            \
+    --output-dir ./output                           \
+    --bootc-ref localhost/fedora-atomic-seed:latest \
+    --bootc-default-fs xfs qcow2
 ```
+
+To launch with libvirt:
+
+```
+virt-install --import --name seed --ram=1024 \
+    --osinfo detect=on,require=off --autoconsole=text --disk=output/disk.qcow2
+```
+
