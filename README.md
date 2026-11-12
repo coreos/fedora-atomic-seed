@@ -30,11 +30,26 @@ Image build successful: output/disk.qcow2
 
 ## Testing
 
-To launch with libvirt:
+To launch with libvirt and embed an SSH key for `root` user:
 
 ```
-virt-install --import --name seed --ram=1024          \
-    --osinfo detect=on,require=off --autoconsole=text \
-    --disk=size=20,backing_store="${PWD}/output/disk.qcow2"
+KEY_B64=$(base64 -w0 < /path/to/sshkey.pub)
+virt-install --import --name seed --ram=1024                \
+    --osinfo detect=on,require=off --autoconsole=text       \
+    --boot=uefi,bootmenu.enable=on,bios.useserial=on        \
+    --network bridge=virbr0,model=virtio                    \
+    --disk=size=20,backing_store="${PWD}/output/disk.qcow2" \
+    --qemu-commandline="-smbios type=11,value=io.systemd.credential.binary:ssh.authorized_keys.root=${KEY_B64}"
 ```
 
+To detect the IP address assigned to the instance:
+
+```
+virsh domifaddr seed  --full --source=arp
+```
+
+Then connect via SSH:
+
+```
+ssh root@192.168.122.132
+```

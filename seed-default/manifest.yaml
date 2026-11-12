@@ -45,3 +45,8 @@ packages:
   - container-selinux
   # Needed for tpm2 bound luks
   - tpm2-tools
+  # networking/access
+  - iptables-nft
+  - NetworkManager
+  - openssh-clients
+  - openssh-server
