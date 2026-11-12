@@ -9,7 +9,34 @@ to easily create many different Operating system variants.
 To build locally simply run:
 
 ```
-sudo podman build --security-opt=label=disable --cap-add=all --device /dev/fuse -t localhost/fedora-atomic-seed:latest .
+podman build --security-opt=label=disable --cap-add=all \
+    --device /dev/fuse -t localhost/fedora-atomic-seed:latest .
+```
+
+# Testing with `bcvk`
+
+To test the built container with `bcvk`:
+
+```
+sudo dnf install -y bcvk
+bcvk libvirt run --filesystem xfs --name seed localhost/fedora-atomic-seed:latest
+bcvk libvirt ssh seed
+```
+
+To then delete the running VM and the disk image:
+
+```
+bcvk libvirt rm seed --force
+bcvk libvirt base-disks prune
+```
+
+# Testing with Image Builder + Libvirt
+
+`image-builder` CLI runs as root so you either need to have ran the container build as `sudo` above or
+get the container into the `root` user's container storage via:
+
+```
+podman save localhost/fedora-atomic-seed:latest | sudo podman load
 ```
 
 To build a disk image using `image-builder` CLI:
@@ -27,8 +54,6 @@ This will output something like:
 ```
 Image build successful: output/disk.qcow2
 ```
-
-## Testing
 
 To launch with libvirt and embed an SSH key for `root` user:
 
